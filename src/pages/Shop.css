@@ -142,6 +142,7 @@ body {
     height: fit-content;
     justify-content: flex-start; /* Align content inside to the left */
     width: 65%; /* Occupy 65% of the parent width */
+
 }
 
 .mid_left_sec {
@@ -176,6 +177,9 @@ body {
 
 }
 
+
+
+
 .tote {
     position: absolute; /* Remove from normal flow */
     top: -40%; /* Adjust vertical position */
@@ -209,7 +213,9 @@ body {
 .music_right_con {
     margin-left: auto;
     width: 45vw;
+
 }
+
 
 .music_merch_right {
     display: grid;
@@ -235,7 +241,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(231, 231, 231);
+    background-color: #fff;
 
 }
 
@@ -246,6 +252,12 @@ body {
 }
 
 .music_item img{
+    height: 90%;
+    cursor: pointer;
+
+}
+
+.music_item video{
     height: 90%;
     cursor: pointer;
 }
@@ -408,7 +420,7 @@ body {
 .music_item_con p {
     color: black;
     font-size: larger;
-    margin-bottom: 20px;
+    margin-top: -1rem;
 }
 
 
@@ -425,10 +437,14 @@ body {
     justify-content: center;
     text-align: center;
 
+
 }
 
 .shop_headerr {
     color: white;
+    display: flex;
+    justify-self: center;
+
 }
 
 .shop_navbar_con {

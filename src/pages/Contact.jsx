@@ -221,7 +221,7 @@ function Contact() {
                 </div>
 
             </div>
-            {/*<div className="order_type">
+            <div className="order_type">
               <div className="options">
                 <div className="delivery_btn_con">
                   <label htmlFor="delivery">
@@ -408,8 +408,9 @@ function Contact() {
                     </div>
                   </div>
                 </div>
-              )
-            </div>}*/}
+              )}
+            </div>
+        
         </div>
 
     </div>

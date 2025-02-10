@@ -1,21 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Checkout.css";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom"
 import tour_cover from "../assets/lif_tour.png"
+import SQLiteComponent from "../SQLiteComponent";
+import emailjs from "@emailjs/browser";
+
+
+
 const Checkout = () => {
+      const sqliteRef = useRef(null);	
+  
       const [isOpen, setIsOpen] = useState(false);
       const [cart, setCart] = useState([]);
       const navigate = useNavigate();
       const [showModal, setShowModal] = useState(false);
 
-      const [seat, setSeat] = useState(null);
-      const[price, setPrice] = useState(null);
+      const [email, setEmail] = useState(""); // ? Store user inputted email      
+      const [firstname, setFirstname] = useState("");
       
 
+      const [seat, setSeat] = useState(null);
+      const[price, setPrice] = useState(null);
+
+      const handleUpdate = (cart) => {
+        if (sqliteRef.current && sqliteRef.current.updateNumberByText) {
+    
+          cart.forEach((item, index) => {
+          console.log(`Updating DB for item ${index + 1}: ${item.id}, Quantity: ${item.quantity}`);
+            alert(`Inventory quantity will be reduced for ${item.id} by ${item.quantity}`);			
+          sqliteRef.current.updateNumberByText(item.id, item.quantity);
+          });
+        }
+      }
+
       const handlePlaceOrder = (e) => {
+        handleUpdate(cart)
         e.preventDefault(); 
+        sendOrderEmail((emailSent) => {
+          if (!emailSent) return;
         localStorage.removeItem("cart");
         localStorage.removeItem("seat");
         setCart([]);
@@ -23,7 +47,54 @@ const Checkout = () => {
         setPrice(null)
 
         setShowModal(true);
+        });
       };
+
+      const sendOrderEmail = (callback) => {
+        if (cart.length === 0) {
+          alert("Your cart is empty!");
+          return false;
+        }
+      
+        if (!email) {
+          alert("Please enter your email before placing the order.");
+          return false;
+        }
+      
+        // Create the HTML for the order details table
+        const orderDetails = cart.map(item => `Item: ${item.name} | Quantity: ${item.quantity} | Price: $${item.price}`).join("\n");
+
+      
+        const emailParams = {
+          email: email,
+          orderDetails: orderDetails,
+          firstname: firstname,
+        };
+
+      
+        emailjs.send(
+          "service_1acgy4a", // Replace with your EmailJS service ID
+          "template_j137j7k", // Replace with your EmailJS template ID
+          emailParams,
+          "84tdCD4eO-pKrNyXF" // Replace with your EmailJS user ID (public key)
+        ).then(
+          (response) => {
+            alert("Order email sent successfully!");
+            console.log("Email Response:", response);
+            callback(true);
+          }
+        ).catch(
+          (error) => {
+            console.error("Error sending email:", error);
+            alert("Failed to send email.");
+            callback(false);
+          }
+        );
+      };
+      
+      
+
+      
 
       const handleModalClose = () => {
         setShowModal(false);
@@ -90,6 +161,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout_page">
+      <SQLiteComponent ref={sqliteRef} />
         <h1 className="test">hi</h1>
         <div className="back_conn">
           <button className="back_shopp" onClick={() => navigate("/shop")}>← Back to Shop</button>
@@ -103,14 +175,21 @@ const Checkout = () => {
                 {step === 1 ? (
                   <div className="checkout-form-col-50">
                     <h3 className="checkout-form-section-heading">Billing Address</h3>
-                    <label className="checkout-form-label" htmlFor="fname"><i className="fa fa-user"></i> Full Name</label>
-                    <input type="text" id="fname" name="firstname" placeholder="John M. Doe" className="checkout-form-input" />
+                    
+                    <label className="checkout-form-label" htmlFor="firstname"><i className="fa fa-user"></i> Full Name</label>
+                    
+
+					          <input  type="text" id="firstname" name="firstname" placeholder="John M. Doe" className="checkout-form-input" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
+					
                     <label className="checkout-form-label" htmlFor="email"><i className="fa fa-envelope"></i> Email</label>
-                    <input type="text" id="email" name="email" placeholder="john@example.com" className="checkout-form-input" />
+                    <input  type="text" id="email" name="email" placeholder="john@example.com" className="checkout-form-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    
                     <label className="checkout-form-label" htmlFor="adr"><i className="fa fa-address-card-o"></i> Address</label>
                     <input type="text" id="adr" name="address" placeholder="542 W. 15th Street" className="checkout-form-input" />
+                    
                     <label className="checkout-form-label" htmlFor="city"><i className="fa fa-institution"></i> City</label>
                     <input type="text" id="city" name="city" placeholder="New York" className="checkout-form-input" />
+                    
                     <div className="checkout-form-row-state">
                       <div className="checkout-form-col-50">
                         <label className="checkout-form-label" htmlFor="state">State</label>

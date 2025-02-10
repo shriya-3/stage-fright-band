@@ -19,6 +19,8 @@ import Background_Vid from "../assets/stage_editedd.mp4"
 import red_smoke from "../assets/red_smoke.mp4"
 import members from "../assets/band_members.png"
 import Aout from "../components/Members.jsx"
+import Arrow from "../assets/arrow_left.png";
+
 
 
 function Home() {
@@ -56,9 +58,12 @@ function Home() {
                     <video src={Background_Vid} autoPlay loop muted className="video" />
                     <div className="text">
                         <h2 className=""><strong className="stage">STAGE</strong> <br></br><strong className="fright">FRIGHT</strong></h2>
-                        
+
+                        <img src={Arrow} className="homeArrow"/> 
                     </div>
                 </div>
+                
+
 
             </div>
             <div className="out_now">

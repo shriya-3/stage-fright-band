@@ -180,11 +180,71 @@ input:nth-of-type(5):checked ~ main#carousel {
 
 .arrow.left {
     left: 0rem; /* Adjust this value to place the arrow */
+    text-shadow:
+    0 0 0px #dea730,
+    0 0 1px #dea730,
+    0 0 12px #f5cb7f,
+    0 0 32px #dea730,
+    0 0 70px #dea730,
+    0 0 10px #dea730,
+    0 0 10px #f5cb7f,
+    0 0 4px #f5cb7f;
 }
 
+
+
 .arrow.right {
-    right: 0rem; /* Adjust this value to place the arrow */
+    right: 0rem;
+
+    text-shadow:
+    0 0 0px #ee9323,
+    0 0 1px #b04202,
+    0 0 12px #f68020,
+    0 0 32px #fda745,
+    0 0 70px #d1c09c,
+    0 0 10px #f3e8d0,
+    0 0 10px #c9ac75,
+    0 0 4px #f5cb7f;
+
+    animation: flicker 1.2s infinite;
 }
+
+@keyframes flicker {
+    0% {
+      opacity: 1;
+      text-shadow:
+      0 0 0px #ee9323,
+      0 0 1px #b04202,
+      0 0 12px #f68020,
+      0 0 32px #fda745,
+      0 0 70px #d1c09c,
+      0 0 10px #f3e8d0,
+      0 0 10px #c9ac75,
+      0 0 4px #f5cb7f;
+
+    }
+    50% {
+      opacity: 1;
+
+    }
+    70% {
+      opacity: 1;
+      text-shadow:
+      0 0 0px #f5cb7f,
+      0 0 1px #f5cb7f,
+      0 0 12px #f5cb7f,
+      0 0 32px #de9e2a,
+      0 0 70px #de9e2a,
+      0 0 10px #f5cb7f,
+      0 0 10px #f5cb7f,
+      0 0 4px #f5cb7f;
+
+    }
+    100% {
+      opacity: 1;
+
+    }
+  }
 
 .arrow:hover {
     color: #dec32a;

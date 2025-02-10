@@ -82,7 +82,7 @@ body {
     line-height:0.8;
     z-index: 1;
     display: flex;
-    margin-top: 2rem;
+    margin-top: 1rem;
     /*text-shadow:
     0 0 0px #c61c1e,
     0 0 1px #c61c1e,
@@ -123,6 +123,18 @@ body {
     line-height: 0.7;
     margin: 0;
     font-weight: 900;
+}
+
+.shadow {
+    display: flex;
+    justify-content: center;
+}
+
+.homeArrow {
+    display: flex;
+    justify-content: center;
+    transform: rotate(270deg);
+
 }
 
 .band_sil {

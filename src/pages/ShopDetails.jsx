@@ -1,3 +1,4 @@
+import SQLiteComponent from "../SQLiteComponent";
 
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -28,6 +29,9 @@ import Shirt10_back from "../assets/shirt10_back.png"
 
 import toteOne from "../assets/toteOne.png"
 import toteTwo from "../assets/toteTwo.png"
+import toteOneBack from "../assets/toteOne_back.png"
+import toteTwoBack from "../assets/toteTwo_back.png"
+
 import cap_front from "../assets/cap_front.png"
 import cap_back from "../assets/cap_back.png"
 import tokens from "../assets/tokens.png"
@@ -51,6 +55,14 @@ import shirt6_blue from "../assets/shirt6_blue.png"
 import shirt6_red from "../assets/shirt6_gold.png"
 import shirt7_blue from "../assets/shirt7_blue.png"
 import shirt7_pink from "../assets/shirt7_pink.png"
+
+import hoodie1 from "../assets/hoodie1.png"
+import hoodie1_back from "../assets/hoodie1_back.png"
+import hoodie2 from "../assets/hoodie2.png"
+import hoodie2_back from "../assets/hoodie2_back.png"
+
+import { Toaster, toast } from 'react-hot-toast';
+import "react-toastify/dist/ReactToastify.css"; // import styles
 
 
 import CartSidebar from "../components/CartSideBar";
@@ -93,8 +105,12 @@ const items = [
   { id: "shirt8", name: "On Tour White Tee", description: "This crisp white tee features exclusive tour graphics, making it a fresh addition to your collection. Its lightweight fabric is ideal for concerts and casual outings.", price: 24.99, image: Shirt8_front, backImage: Shirt8_back },
   { id: "shirt9", name: "Stage Fright Rocker Tee", description: "With its edgy design and distressed look, this rocker tee is made for fans who love a bold style. It’s the ultimate statement piece.", price: 29.99, image: Shirt9_front, backImage: Shirt9_back },
   { id: "shirt10", name: "Stage Photo Tee", description: "Capture the energy of the stage with this vivid photo tee. Designed for comfort, it's perfect for reliving concert memories.", price: 27.99, image: Shirt10_front, backImage: Shirt10_back },
-  { id: "toteOne", name: "Stage Fright Classic Tote", description: "Carry your essentials in this classic tote bag featuring the Stage Fright logo. Durable and spacious, it’s perfect for shopping or a day out.", price: 29.99, image: toteOne },
-  { id: "toteTwo", name: "Stage Fright Graphic Tote", description: "Show off your fandom with this vibrant graphic tote bag. Sturdy and stylish, it’s ideal for everyday use or as a gift.", price: 24.99, image: toteTwo },
+  { id: "hoodie1", name: "Ignition Themed Tour Hoodie", description: "This comfortable and cozy hoodie features themes from Stage Fright's Ignition Album. Fans can wear this to show their love for Ignition and the upcoming tour.", price: 39.99, image: hoodie1, backImage: hoodie1_back },
+
+  { id: "hoodie2", name: "Stage Fright Members Hoodie", description: "This hoodie features a striking photo of the band, capturing their iconic style. Made from soft cotton, it's a bold addition to any fan’s wardrobe.", price: 49.99, image: hoodie2, backImage: hoodie2_back },
+
+  { id: "toteOne", name: "Stage Fright Classic Tote", description: "Carry your essentials in this classic tote bag featuring the Stage Fright logo. Durable and spacious, it’s perfect for shopping or a day out.", price: 29.99, image: toteOne, backImage:toteOneBack },
+  { id: "toteTwo", name: "Stage Fright Graphic Tote", description: "Show off your fandom with this vibrant graphic tote bag. Sturdy and stylish, it’s ideal for everyday use or as a gift.", price: 24.99, image: toteTwo, backImage:toteTwoBack },
   { id: "cap", name: "Stage Fright Baseball Cap", description: "This adjustable baseball cap features the iconic Stage Fright logo, making it a perfect accessory for fans. Designed for comfort and style, it’s suitable for any occasion.", price: 19.99, image: cap_front, backImage: cap_back },
   { id: "tokens", name: "Stage Fright Keychain Assortment", description: "A set of high-quality keychains showcasing unique Stage Fright designs. Great for personal use or sharing with fellow fans.", price: 9.99, image: tokens },
   { id: "bundle", name: "Accessory Bundle Package", description: "This all-in-one accessory bundle includes a tote, cap, and more fan-favorite items. The perfect way to show your love for Stage Fright.", price: 49.99, image: bundle_front, backImage: bundle_back },
@@ -111,22 +127,42 @@ const items = [
 
 
 
+
 const ShopDetails = () => {
+  const sqliteRef = useRef(null);
   const [item, setItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null); // State for selected size
-  const [selectedColor, setSelectedColor] = useState(null); // State for selected color
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const navigate = useNavigate();
+  const [inventory, setInventory] = useState(null);
+  const [newInv, setNewInv] = useState(null);
+  const [addedMessage, setAddedMessage] = useState(""); // Added message state
+
+  // Function to fetch inventory
 
 
+
+
+
+
+  
+
+  // Fetch item details & inventory when component mounts
   useEffect(() => {
+    
+  
     const storedItemId = JSON.parse(localStorage.getItem("clickedItem"));
+    const inven = JSON.parse(localStorage.getItem("inventory"));
     if (storedItemId) {
       const selectedItem = items.find((item) => item.id === storedItemId);
       if (selectedItem) {
         setItem(selectedItem);
         setMainImage(selectedItem.image);
+        
+        setInventory(inven)
+
   
         // Set default size to medium
         if (sizes.length > 0) {
@@ -151,7 +187,29 @@ const ShopDetails = () => {
     }
   }, [navigate, items, sizes, itemColors, itemImages]);
   
-  
+
+
+
+  const compareNumbers = (inv) => {
+    if (inv == 0) {
+      toast.error('This item is sold out!', {
+        duration: 6000, // 4 seconds
+        style: {
+          backgroundColor: '#ff4d4d', // Red background for error
+          color: 'white',             // White text color
+          fontSize: '16px',           // Custom font size
+          padding: '12px',            // Custom padding
+          marginTop: '10px'
+        },
+      });
+      return false;
+    }
+    if (inv < quantity) {
+      alert(`Please select a quantity less than or equal to: ${inv}`);
+      return false;
+    }
+    return true;
+  };
 
   const handleAddToCart = () => {
     if (!item) {
@@ -166,20 +224,27 @@ const ShopDetails = () => {
       alert("Please select a color.");
       return;
     }
-  
+
+
+
+
+
+    if (!compareNumbers(inventory)) {
+      return;
+    }
+
+
+
     let selectedItemImage = item.image;
     if (itemColors[item.id] && selectedColor) {
       selectedItemImage = itemImages[item.id][selectedColor];
     }
-  
+
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItemIndex = storedCart.findIndex(
-      (cartItem) =>
-        cartItem.id === item.id &&
-        cartItem.size === selectedSize &&
-        cartItem.color === selectedColor
+      (cartItem) => cartItem.id === item.id && cartItem.size === selectedSize && cartItem.color === selectedColor
     );
-  
+
     if (existingItemIndex !== -1) {
       storedCart[existingItemIndex].quantity += quantity;
     } else {
@@ -191,11 +256,10 @@ const ShopDetails = () => {
         image: selectedItemImage,
       });
     }
-  
+
     localStorage.setItem("cart", JSON.stringify(storedCart));
     window.dispatchEvent(new Event("cartUpdated"));
   };
-  
 
   if (!item) {
     return <p>Loading item details...</p>;
@@ -203,6 +267,11 @@ const ShopDetails = () => {
 
   return (
     <div className="item-details">
+      <SQLiteComponent ref={sqliteRef} />
+      <Toaster position="top-center" />
+
+
+
       <CartSidebar />
       <div className="back_con">
         <button className="back_shop" onClick={() => navigate("/shop")}>
@@ -212,53 +281,34 @@ const ShopDetails = () => {
       <div className="item-details-sub">
         <div className="item-details-left">
           <h2 className="item-name">{item.name}</h2>
-  
+
           <div className="main-image-container">
-            <img
-              src={mainImage}
-              alt={`${item.name} Main`}
-              className="main-image"
-            />
+            <img src={mainImage} alt={item.name} className="main-image" />
           </div>
-  
+
           <div className="thumbnail-container">
-            <img
-              src={item.image}
-              alt={`${item.name} Front`}
-              className="thumbnail"
-              onClick={() => setMainImage(item.image)}
-            />
+            <img src={item.image} alt={item.name} className="thumbnail" onClick={() => setMainImage(item.image)} />
             {item.backImage && (
-              <img
-                src={item.backImage}
-                alt={`${item.name} Back`}
-                className="thumbnail"
-                onClick={() => setMainImage(item.backImage)}
-              />
+              <img src={item.backImage} alt={`${item.name} Back`} className="thumbnail" onClick={() => setMainImage(item.backImage)} />
             )}
           </div>
         </div>
-  
+
         <div className="item-details-right">
           <p>{item.description}</p>
           <p>Price: ${item.price}</p>
-          {item.id.startsWith("shirt") && ( // Only render for shirts
-          <div className="size-options">
-            <div className="size-boxes">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  className={`size-box ${selectedSize === size ? "selected" : ""}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
+          {item.id.startsWith("shirt") && (
+            <div className="size-options">
+              <div className="size-boxes">
+                {sizes.map((size) => (
+                  <button key={size} className={`size-box ${selectedSize === size ? "selected" : ""}`} onClick={() => setSelectedSize(size)}>
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-  
-          {/* Add color options only for shirt5, shirt6, and shirt7 */}
+          )}
+
           {itemColors[item.id] && (
             <div className="color-options">
               <div className="color-boxes">
@@ -269,32 +319,32 @@ const ShopDetails = () => {
                     style={{ backgroundColor: color }}
                     onClick={() => {
                       setSelectedColor(color);
-                      if (item.id === "shirt5" || item.id === "shirt6" || item.id === "shirt7") {
-                        const colorImage = itemImages[item.id][color];
-                        setMainImage(colorImage);
+                      if (["shirt5", "shirt6", "shirt7"].includes(item.id)) {
+                        setMainImage(itemImages[item.id][color]);
                       }
                     }}
-                  >
-                  </button>
+                  />
                 ))}
               </div>
             </div>
           )}
-  
+
           <div className="cart-controls">
             <label htmlFor="quantity">Quantity:</label>
-            <select
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-            >
+            <select id="quantity" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}>
               {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
                 <option key={num} value={num}>
                   {num}
                 </option>
               ))}
             </select>
-            <br />
+
+            {/* Display current inventory and added message */}
+            <p>
+              {inventory === 0 ? "Sold Out!" : `Current Inventory: ${inventory}`}
+            </p>
+            {addedMessage && <p>{addedMessage}</p>}
+
             <button className="add_cart" onClick={handleAddToCart}>
               Add to Cart - ${(item.price * quantity).toFixed(2)}
             </button>
@@ -303,10 +353,6 @@ const ShopDetails = () => {
       </div>
     </div>
   );
-  
-  
-  
-  
 };
 
 export default ShopDetails;

@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
+
 import Modal from "react-modal";
 import "./CartSideBar.css";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom"
 import shop_bag from "../assets/shop_bag (1).png"
-
+import SQLiteComponent from "../SQLiteComponent";
 
 
 Modal.setAppElement("#root"); // Ensures accessibility by linking the modal to your app's root div.
 
 const CartModal = () => {
+  const sqliteRef = useRef(null);	
   const [isOpen, setIsOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
@@ -53,8 +56,18 @@ const CartModal = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save changes to localStorage
   };
 
+
+  
+  
+  const handleProceed = () => {
+    navigate("/checkout"); 
+  };  
+  
+  
+
   return (
     <>
+     <SQLiteComponent ref={sqliteRef} />
       <div className="cart-icon" onClick={toggleModal}>
         <img className="shop_bag" src={shop_bag} />
       </div>
@@ -66,7 +79,7 @@ const CartModal = () => {
         overlayClassName="cart-overlay"
       >
         <button className="close-button" onClick={toggleModal}>
-          ✖
+          ?
         </button>
         <h2 className="your_cart_text">Your Cart</h2>
         {cart.length === 0 ? (
@@ -103,8 +116,9 @@ const CartModal = () => {
         )}
         <p className="total-price">Total: ${calculateTotal()}</p>
         <div className="proceed_but_con">
-          <button className="proceed" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>
-
+	          <button className="proceed" onClick={() => handleProceed()}>
+	            Proceed to Checkout
+          	  </button>
         </div>
 
       </Modal>

@@ -1,32 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import SQLiteComponent from "../SQLiteComponent";
+
 import { useNavigate } from "react-router-dom"
 
 
 import Arrow from "../assets/arrow_left.png";
-import Merch1 from "../assets/merch1.png";
-import Merch2 from "../assets/merch2.png";
-import Merch3 from "../assets/merch3.png";
 
-import Shirt1_front from "../assets/shirtOne_front.png";
-import Shirt1_back from "../assets/shirtOne_back.png";
-import Shirt2_front from "../assets/shirtTwo_front.png";
-import Shirt2_back from "../assets/shirtTwo_back.png";
+
 import Shirt3_front from "../assets/shirtThree_front.png";
 import Shirt3_back from "../assets/shirtThree_back.png";
 import Shirt4_front from "../assets/shirtFour_front.png";
 import Shirt4_back from "../assets/shirtFour_back.png";
 
-import shirt5 from "../assets/shirt5.png"
+
 import shirt6 from "../assets/shirt6.png"
-import shirt7 from "../assets/shirt7.png"
 import shirt8 from "../assets/shirt8.png"
 import shirt9 from "../assets/shirt9.png"
 import shirt10 from "../assets/shirt10.png"
 
-import shirt5_back from "../assets/shirt5_back.png"
 import shirt6_back from "../assets/shirt6_back.png"
-import shirt7_back from "../assets/shirt7_back.png"
 import shirt8_back from "../assets/shirt8_back.png"
 import shirt9_back from "../assets/shirt9_back.png"
 import shirt10_back from "../assets/shirt10_back.png"
@@ -34,7 +26,7 @@ import shirt10_back from "../assets/shirt10_back.png"
 import "./New_Shop_Bar.css";
 
 export default function MenuBar() {
-    const [isHovered, setIsHovered] = useState(false);
+    
 
     const scrollHandler = (direction) => {
         console.log("Arrow clicked", direction);
@@ -45,16 +37,41 @@ export default function MenuBar() {
         }
     };
     const navigate = useNavigate();
-    
 
-    const handleImageClick = (id) => {
+    const [inventory, setInventory] = useState(null);
+    const sqliteRef = useRef(null);
+    
+    const fetchItemNumber =  (itemId) => {
+      if (sqliteRef.current && sqliteRef.current.fetchDataByText) {
+        const numberValue =  sqliteRef.current.fetchDataByText(itemId);
+        return numberValue;
+      }
+      return null;
+    }; 
+    
+    
+    const handleImageClick = async (id) => {
+      // Set clicked item ID in localStorage
       localStorage.setItem("clickedItem", JSON.stringify(id));
-      console.log("Item added to local storage:", id);
-      navigate("/shopdetails")
-    };
+      
+      // Fetch inventory asynchronously and store it once fetched
+      const inv = await fetchItemNumber(id);
+  
+      // Store the fetched inventory in localStorage if it's available
+      if (inv !== null) {
+          console.log("Storing inventory in localStorage:", inv); // Add log here
+          localStorage.setItem("inventory", JSON.stringify(inv));
+      }
+  
+      // Navigate to ShopDetails page
+      navigate("/shopdetails");
+  };
+
+
 
     return (
         <div className="shopBar">
+          <SQLiteComponent ref={sqliteRef} />
           
             <img
                 src={Arrow}
