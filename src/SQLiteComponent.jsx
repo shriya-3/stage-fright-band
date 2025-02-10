@@ -8,9 +8,9 @@ const SQLiteComponent = forwardRef((props, ref) => {
   useEffect(() => {
     const loadDatabase = async () => {
       try {
-        const SQL = await window.initSqlJs({
-          // locateFile: (file) => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
-          locateFile: (file) => `/stage-fright-band/sql-wasm.wasm`,
+
+        const SQL = await initSqlJs({
+          locateFile: file => `https://shriya-3.github.io/stage-fright-band/${file}`
         });
 
         const request = indexedDB.open("MyDatabase", 1);
