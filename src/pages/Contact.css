@@ -28,7 +28,6 @@ body {
       0 0 0px #f5cb7f,
       0 0 0px #f5cb7f,
       0 0 0px #f5cb7f;
-  line-height: 0;
   padding-bottom: 1rem;
 
 }
@@ -172,7 +171,6 @@ body {
       0 0 0px #f5cb7f,
       0 0 8px #f5cb7f,
       0 0 0px #f5cb7f;
-  line-height: 0.5;
   padding-bottom: 0rem;
 }
 
@@ -211,29 +209,7 @@ body {
   transition: 0.3s ease-in-out;
 }
 
-.tab_buttons {
-  display: flex;
-  margin-bottom: 20px;
-}
 
-.tab_button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #ddd;
-  cursor: pointer;
-}
-
-.tab_button.active {
-  background-color: #555;
-  color: white;
-}
-
-.tab_content {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
 
 
 /* old stuff */
@@ -241,7 +217,8 @@ body {
 
 
 .order_type, .payment_type, .discount_con {
-  background-color: #ffc33c;
+  border-radius: 10px;
+
   font-family: 'Antonio';
 
 }
@@ -263,20 +240,40 @@ body {
 
 
 
-
-
-.delivery_btn.active1, .pickup_btn.active1 {
-  background-color: #f8fadb;
+.delivery_btn, .pickup_btn {
+  background-color: black;
+  color: white;
+  font-family: 'Antonio';
+  font-size: 16px;
+  justify-self: center;
+  align-self: center;
   border: 4px;
 }
 
-.pickup_btn1.active4, .delivery_btn1.active3 {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: #f8fadb;
-  cursor: pointer;
+.delivery_btn.active1, .pickup_btn.active1 {
+  background-color: #333;
+  accent-color: #e0403f;
+
 }
+
+.pickup_btn.selected, .delivery_btn.selected {
+  background-color:  #e0403f;
+  
+}
+
+.pickup_radio, .delivery_radio {
+  background-color: white;
+}
+
+.pickup_radio:checked, .delivery_radio:checked {
+  background-color: #de9e2a;
+}
+
+form {
+  padding: 20px 0px;
+}
+
+
 
 
 
@@ -288,7 +285,9 @@ body {
   width: 100%;
   height: 100%;
   border: none;
-  background-color: #ffc33c;
+  border-radius: 10px;
+  accent-color: #e0403f;
+
   cursor: pointer;
 }
 
@@ -304,7 +303,6 @@ body {
   box-shadow: 0 0 30px rgb(249, 242, 43);
   border-radius: 50%; 
   outline: none; 
-  background-color: white; 
   cursor: pointer;
   transition: all 0.3s ease; 
 }
@@ -314,6 +312,8 @@ body {
 
 .delivery_btn_con1, .pickup_btn_con1 {
   border-radius: 20px;
+  accent-color: #e0403f;
+
   height: 3rem;
 
 }
@@ -323,6 +323,8 @@ body {
 .delivery_btn_con1 button, .pickup_btn_con1 button {
   display: flex;
   align-items: center;
+  accent-color: #e0403f;
+
   justify-content: center;
   border-radius: 15px;
 }
@@ -370,8 +372,19 @@ body {
 }
 
 
+.contact_flex {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 20px;
+}
 
-
-
-
-
+.date_input, .time_input {
+  width: 95%;
+  margin: 14px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #333333;
+  color: white;
+}
