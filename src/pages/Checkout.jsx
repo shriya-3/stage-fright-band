@@ -29,7 +29,6 @@ const Checkout = () => {
     
           cart.forEach((item, index) => {
           console.log(`Updating DB for item ${index + 1}: ${item.id}, Quantity: ${item.quantity}`);
-            alert(`Inventory quantity will be reduced for ${item.id} by ${item.quantity}`);			
           sqliteRef.current.updateNumberByText(item.id, item.quantity);
           });
         }
@@ -60,10 +59,23 @@ const Checkout = () => {
           alert("Please enter your email before placing the order.");
           return false;
         }
+
+        let seatInfo = localStorage.getItem("seat");
+        let seatPrice = localStorage.getItem("price");
+        if (seatInfo) {
+          seatInfo = seatInfo.replace(/^"|"$/g, ""); // Remove surrounding quotation marks
+        }
       
         // Create the HTML for the order details table
-        const orderDetails = cart.map(item => `Item: ${item.name} | Quantity: ${item.quantity} | Price: $${item.price}`).join("\n");
-
+        let orderDetails = cart.map(item => `Item: ${item.name} | Quantity: ${item.quantity} | Price: $${item.price}`).join("\n");
+      
+        // Append seat info if it exists
+        if (seatInfo) {
+          orderDetails += "\n"
+          orderDetails += `Concert Seat Number: ${seatInfo} | Price: $${seatPrice}`;
+        }
+      
+        // Create the HTML for the order details table
       
         const emailParams = {
           email: email,
@@ -79,7 +91,6 @@ const Checkout = () => {
           "84tdCD4eO-pKrNyXF" // Replace with your EmailJS user ID (public key)
         ).then(
           (response) => {
-            alert("Order email sent successfully!");
             console.log("Email Response:", response);
             callback(true);
           }
@@ -315,8 +326,10 @@ const Checkout = () => {
               <button className="modal-x-button" onClick={handleModalClose} >X</button>
               <h2>Order Placed!</h2>
               <p>Your order has been placed successfully!</p>
+              <p>Email Confirmation Sent To: {email}</p>
+              <p>Please Check Your Inbox!</p>
               <button onClick={handleModalClose} className="modal-close-btn">
-                Back to Shop
+                Shop Merch
               </button>
             
             </div>
