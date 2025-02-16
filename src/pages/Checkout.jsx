@@ -50,10 +50,7 @@ const Checkout = () => {
       };
 
       const sendOrderEmail = (callback) => {
-        if (cart.length === 0) {
-          alert("Your cart is empty!");
-          return false;
-        }
+
       
         if (!email) {
           alert("Please enter your email before placing the order.");

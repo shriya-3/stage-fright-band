@@ -6,7 +6,8 @@ import tour_banner from "../assets/tour_banner.png"
 
 function Tour_Main() {
     const navigate = useNavigate();
-    const handleClick = () => {
+    const handleClick = (id) => {
+        localStorage.setItem("clickedTour", JSON.stringify(id))
         window.scrollTo({ top: 0, behavior: 'smooth' });
         navigate("/tour")
     }
@@ -36,7 +37,7 @@ function Tour_Main() {
                                 <h3 className="area">Dallas, TX</h3>
                             </div>
                             <div className="tickets">
-                                <button className="ticket_button" onClick={handleClick}>Buy Tickets</button>
+                                <button className="ticket_button" onClick={() => handleClick("amer")}>Buy Tickets</button>
                             </div>
                             </div>
 
@@ -50,7 +51,7 @@ function Tour_Main() {
                                 <h3 className="area">Dallas, TX</h3>
                             </div>
                             <div className="tickets">
-                                <button className="ticket_button" onClick={handleClick}>Buy Tickets</button>
+                                <button className="ticket_button" onClick={() => handleClick("toyota")}>Buy Tickets</button>
                             </div>
                             </div>
 
@@ -63,7 +64,7 @@ function Tour_Main() {
                                 <h3 className="area">Dallas, TX</h3>
                             </div>
                             <div className="tickets">
-                                <button className="ticket_button" onClick={handleClick}>Buy Tickets</button>
+                                <button className="ticket_button" onClick={() => handleClick("blues")}>Buy Tickets</button>
                             </div>
                             </div>
                         </div>
