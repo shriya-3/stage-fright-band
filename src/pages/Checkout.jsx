@@ -63,29 +63,23 @@ const Checkout = () => {
           seatInfo = seatInfo.replace(/^"|"$/g, ""); // Remove surrounding quotation marks
         }
       
-        // Create the HTML for the order details table
-        let orderDetails = cart.map(item => `Item: ${item.name} | Quantity: ${item.quantity} | Price: $${item.price}`).join("\n");
-      
-        // Append seat info if it exists
+        let orderDetails = cart.map(item => `Item: ${item.name} | Quantity: ${item.quantity} | Price: $${item.price}`).join("\n");      
         if (seatInfo) {
           orderDetails += "\n"
           orderDetails += `Concert Seat Number: ${seatInfo} | Price: $${seatPrice}`;
         }
-      
-        // Create the HTML for the order details table
-      
+
         const emailParams = {
           email: email,
           orderDetails: orderDetails,
           firstname: firstname,
         };
-
-      
+     
         emailjs.send(
-          "service_1acgy4a", // Replace with your EmailJS service ID
-          "template_j137j7k", // Replace with your EmailJS template ID
+          "service_1acgy4a", 
+          "template_j137j7k",
           emailParams,
-          "84tdCD4eO-pKrNyXF" // Replace with your EmailJS user ID (public key)
+          "84tdCD4eO-pKrNyXF" 
         ).then(
           (response) => {
             console.log("Email Response:", response);
